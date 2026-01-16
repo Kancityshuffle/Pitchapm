@@ -122,6 +122,28 @@ h1 {
   font-weight: 500;
 }
 
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.step-header h2 {
+  margin: 0;
+}
+
+.step-count {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
 .step h2 {
   font-size: 24px;
   margin-bottom: 8px;

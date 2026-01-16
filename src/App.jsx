@@ -254,14 +254,12 @@ export default function App() {
 
       <main className="panel">
         <div className="panel-left">
-          <div className="progress">
-            <span className="progress-pill">Step {Math.min(step + 1, 5)} of 5</span>
-            {/* <span className="progress-label">{progressLabel}</span> */}
-          </div>
-
           {step === 0 && (
             <section className="step">
-              <h2>What feature do you want built?</h2>
+              <div className="step-header">
+                <h2>What feature do you want built?</h2>
+                <span className="step-count">Step 1 of 5</span>
+              </div>
               <p className="step-copy">
               What is it? What do you want it to do?
               </p>
@@ -293,7 +291,10 @@ export default function App() {
 
           {step === 1 && (
             <section className="step">
-              <h2>What problem does it solve?</h2>
+              <div className="step-header">
+                <h2>What problem does it solve?</h2>
+                <span className="step-count">Step 2 of 5</span>
+              </div>
               <p className="step-copy">
                 What's the problem the user or customer has? Be specific about the pain.
               </p>
@@ -310,7 +311,10 @@ export default function App() {
 
           {step === 2 && (
             <section className="step">
-              <h2>What does the PM care about?</h2>
+              <div className="step-header">
+                <h2>What does the PM care about?</h2>
+                <span className="step-count">Step 3 of 5</span>
+              </div>
               <p className="step-copy">
               
               </p>
@@ -357,7 +361,10 @@ export default function App() {
 
           {step === 3 && (
             <section className="step">
-              <h2>How does this help us win?</h2>
+              <div className="step-header">
+                <h2>How does this help us win?</h2>
+                <span className="step-count">Step 4 of 5</span>
+              </div>
               
               <div className="card-grid">
                 {outcomes.map((item) => (
@@ -389,7 +396,10 @@ export default function App() {
 
           {step === 4 && (
             <section className="step">
-              <h2>Your Personalized PM argument</h2>
+              <div className="step-header">
+                <h2>Your Personalized PM argument</h2>
+                <span className="step-count">Step 5 of 5</span>
+              </div>
               <p className="step-copy">
 Like a good sales pitch, the more personalized the better.              </p>
               <div className="drafts">
