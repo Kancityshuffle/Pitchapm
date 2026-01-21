@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import ReactGA from "react-ga4";
+const MEASUREMENT_ID = "G-B2F42HBWF6";
 
 const personas = [
   {
@@ -90,18 +92,20 @@ const buildFallback = ({ feature, persona, personaNote, outcome, length }) => {
   return [sentence1, sentence2, sentence3].join(' ');
 };
 
+const initialFormState = {
+  feature: '',
+  problem: '',
+  personaArchetype: 'data-revenue',
+  persona: 'growth',
+  personaNote: 'They are data-obsessed and care about ARR above all else.',
+  outcome: 'speed',
+  evidence: '',
+  length: 'short'
+};
+
 export default function App() {
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState({
-    feature: '',
-    problem: '',
-    personaArchetype: 'data-revenue',
-    persona: 'growth',
-    personaNote: 'They are data-obsessed and care about ARR above all else.',
-    outcome: 'speed',
-    evidence: '',
-    length: 'short'
-  });
+  const [form, setForm] = useState(initialFormState);
   const [drafts, setDrafts] = useState([]);
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -111,14 +115,19 @@ export default function App() {
   const featureInputRef = useRef(null);
   const problemInputRef = useRef(null);
 
-  useEffect(() => {
-    if (step === 0 && featureInputRef.current) {
-      featureInputRef.current.focus();
-    }
-    if (step === 1 && problemInputRef.current) {
-      problemInputRef.current.focus();
-    }
-  }, [step]);
+
+useEffect(() => {
+  ReactGA.initialize(MEASUREMENT_ID);
+  ReactGA.send({ hitType: "pageview", page: window.location.pathname });
+}, []); 
+useEffect(() => {
+  if (step === 0 && featureInputRef.current) {
+    featureInputRef.current.focus();
+  }
+  if (step === 1 && problemInputRef.current) {
+    problemInputRef.current.focus();
+  }
+}, [step]); 
 
   const progressLabel = useMemo(() => {
     const labels = ['Feature', 'Problem', 'PM context', 'Outcome', 'Argument'];
@@ -172,10 +181,24 @@ export default function App() {
 
   const goNext = async () => {
     if (!canContinue) return;
+
+    // ADD THIS: Tracks progress through the steps
+    ReactGA.event({
+      category: "Lead Magnet",
+      action: "Transition to Step",
+      nav_label: `Moved to Step ${step + 2}` // +2 because index 0 is Step 1 in UI
+    });
+
     if (step < 3) {
       setStep((prev) => prev + 1);
       return;
     }
+
+    ReactGA.event({
+      category: "Lead Magnet",
+      action: "Generate Argument",
+      nav_label: form.feature 
+    });
 
     await requestDrafts();
     setStep(4);
@@ -184,7 +207,22 @@ export default function App() {
 
   const goBack = () => setStep((prev) => Math.max(prev - 1, 0));
 
+  const resetAll = () => {
+    setForm(initialFormState);
+    setDrafts([]);
+    setCopied(false);
+    setError('');
+    setImageDataUrl('');
+    setImageName('');
+  };
+
   const regenerate = async () => {
+
+    ReactGA.event({
+      category: "Lead Magnet",
+      action: "Regenerate Argument",
+      nav_label: "User Regenerated"
+    });
     await requestDrafts();
     setCopied(false);
   };
@@ -194,6 +232,11 @@ export default function App() {
     if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
+      ReactGA.event({
+        category: "Lead Magnet",
+        action: "Copy Text",
+        nav_label: form.feature // Tracks which feature they liked enough to copy
+      });
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch (error) {
@@ -442,6 +485,7 @@ Like a good sales pitch, the more personalized the better.              </p>
                 onClick={(event) => {
                   event.preventDefault();
                   setStep(0);
+                  resetAll();
                 }}
               >
                 Get another feature argument
@@ -502,6 +546,14 @@ Like a good sales pitch, the more personalized the better.              </p>
         target="_blank"
         rel="noopener noreferrer"
         className="powered-by"
+        onClick={() => {
+          // TRACKING: The user is heading back to your main site
+          ReactGA.event({
+            category: "Lead Magnet",
+            action: "Click Powered By",
+            nav_label: "Arkweaver Main Site"
+          });
+        }}
       >
         <span>Powered by</span>
         <img

@@ -1,18 +1,4 @@
-import express from 'express';
-import dotenv from 'dotenv';
 import OpenAI from 'openai';
-
-dotenv.config();
-
-const app = express();
-app.use(express.json({ limit: '5mb' }));
-
-const apiKey = process.env.OPENAI_API_KEY;
-if (!apiKey) {
-  console.warn('Missing OPENAI_API_KEY in environment.');
-}
-
-const client = new OpenAI({ apiKey });
 
 const buildPrompt = ({
   feature,
@@ -65,17 +51,33 @@ Translate the salesperson's request into a professional, concrete, and high-conv
 **Evidence & Ask:** <include specific customer/user if mentioned; end with a low-stakes next step; 1 sentence>
 `;
 
-app.post('/api/generate', async (req, res) => {
-    const {
-      feature,
-      problem,
-      persona,
-      personaNote,
-      outcome,
-      evidence,
-      length,
-      imageDataUrl
-    } = req.body || {};
+export const config = {
+  runtime: 'nodejs'
+};
+
+const apiKey = process.env.OPENAI_API_KEY;
+const client = apiKey ? new OpenAI({ apiKey }) : null;
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ error: 'Method not allowed.' });
+  }
+
+  if (!client) {
+    return res.status(500).json({ error: 'Missing OPENAI_API_KEY in environment.' });
+  }
+
+  const {
+    feature,
+    problem,
+    persona,
+    personaNote,
+    outcome,
+    evidence,
+    length,
+    imageDataUrl
+  } = req.body || {};
 
   if (!feature || feature.trim().length < 3) {
     return res.status(400).json({ error: 'Feature is required.' });
@@ -136,13 +138,4 @@ app.post('/api/generate', async (req, res) => {
     console.error('OpenAI error', error);
     return res.status(500).json({ error: 'Failed to generate argument.' });
   }
-});
-
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
-});
-
-const PORT = process.env.PORT || 8787;
-app.listen(PORT, () => {
-  console.log(`API listening on http://localhost:${PORT}`);
-});
+}
