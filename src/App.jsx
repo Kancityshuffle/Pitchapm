@@ -43,17 +43,17 @@ const archetypes = [
   {
     id: 'data-revenue',
     label: 'Data & Revenue',
-    // note: 'They are data-obsessed and care about ARR above all else.'
+    note: 'They are data-obsessed and care about ARR above all else.'
   },
   {
     id: 'ux-quality',
     label: 'User Experience',
-    // note: 'They care about the user experience and hate technical debt or clunky UI.'
+    note: 'They care about the user experience and hate technical debt or clunky UI.'
   },
   {
     id: 'vision-strategy',
     label: 'Long Term Scalability',
-    // note: 'They care about long-term strategy and building scalable features.'
+    note: 'They care about long-term strategy and building scalable features.'
   }
 ];
 
@@ -277,23 +277,25 @@ useEffect(() => {
 
   return (
     <div className="app">
-      <header className="hero">
-        <div>
-          <p className="eyebrow">The PM Whisperer</p>
-          <h1>Sick and tired of "it's on the roadmap"?</h1>
-          <p className="subhead">
-            Enter a feature you want built. Answer a few questions. Get a pitch that will convince the most meticulous PM or your money back*.
-          </p>
-        </div>
-        {/* <div className="hero-card">
-          <p className="hero-label">Live preview</p>
-          <p className="hero-text">
-            {form.feature
-              ? `A ${form.feature} feature gives the PM a crisp lens on the slice they care about.`
-              : 'A feature that makes decisions faster and clearer.'}
-          </p>
-        </div> */}
-      </header>
+      {step !== 4 && (
+        <header className="hero">
+          <div>
+            {/* {<p className="eyebrow">The PM Whisperer</p>} */}
+            <h1>Tired of "it's on the roadmap"?</h1>
+            <p className="subhead">
+              Enter a feature you want built. Answer a few questions. Get a pitch that will convince the most meticulous PM.
+            </p>
+          </div>
+          {/* <div className="hero-card">
+            <p className="hero-label">Live preview</p>
+            <p className="hero-text">
+              {form.feature
+                ? `A ${form.feature} feature gives the PM a crisp lens on the slice they care about.`
+                : 'A feature that makes decisions faster and clearer.'}
+            </p>
+          </div> */}
+        </header>
+      )}
 
       <main className="panel">
         <div className="panel-left">
@@ -315,7 +317,7 @@ useEffect(() => {
                 ref={featureInputRef}
               />
               <label className="toggle">
-                <span>Feature image (optional)</span>
+                <span class="step-count">Feature image (optional)</span>
                 <input
                   className="file-input"
                   type="file"
@@ -443,18 +445,18 @@ useEffect(() => {
                 <h2>Your Personalized PM argument</h2>
                 <span className="step-count">Step 5 of 5</span>
               </div>
-              <p className="step-copy">
-Like a good sales pitch, the more personalized the better.              </p>
+              {/* <p className="step-copy">
+Like a good sales pitch, the more personalized the better.              </p> */}
               <div className="drafts">
                 <div className="quote-output quote-output-editable">
-                  <span className="quote-mark">“</span>
+                  {/* <span className="quote-mark">“</span> */}
                   <textarea
                     className="quote-textarea"
                     value={drafts[0] || ''}
                     onChange={(event) => setDrafts([event.target.value])}
                     rows={6}
                   />
-                  <span className="quote-mark">”</span>
+                  {/* <span className="quote-mark">”</span> */}
                 </div>
               </div>
               <div className="actions">
@@ -467,7 +469,7 @@ Like a good sales pitch, the more personalized the better.              </p>
             </section>
           )}
 
-          <div className="nav">
+          <div className={`nav ${step === 0 ? 'nav-primary' : ''}`}>
             {step > 0 && step < 4 && (
               <button className="ghost" onClick={goBack}>
                 Back
@@ -480,7 +482,7 @@ Like a good sales pitch, the more personalized the better.              </p>
             )}
             {step === 4 && (
               <a
-                
+                className="restart-link"
                 href="#"
                 onClick={(event) => {
                   event.preventDefault();
@@ -540,8 +542,12 @@ Like a good sales pitch, the more personalized the better.              </p>
           </div> */}
         {/* </aside> */}
       </main>
-      <p className="footer-joke">* This product is free so...yea.</p>
-      <a
+      
+     
+      <div className="footer-joke">
+        
+        
+        <a
         href="https://arkweaver.com"
         target="_blank"
         rel="noopener noreferrer"
@@ -561,7 +567,7 @@ Like a good sales pitch, the more personalized the better.              </p>
           alt="Arkweaver logo"
           className="powered-by-logo"
         />
-      </a>
+      </a></div>
     </div>
   );
 }
