@@ -118,7 +118,6 @@ export default function App() {
 
 useEffect(() => {
   ReactGA.initialize(MEASUREMENT_ID);
-  ReactGA.send({ hitType: "pageview", page: window.location.pathname });
 }, []); 
 useEffect(() => {
   if (step === 0 && featureInputRef.current) {
@@ -183,10 +182,9 @@ useEffect(() => {
     if (!canContinue) return;
 
     // ADD THIS: Tracks progress through the steps
-    ReactGA.event({
+    ReactGA.event("Transition to Step", {
       category: "Lead Magnet",
-      action: "Transition to Step",
-      nav_label: `Moved to Step ${step + 2}` // +2 because index 0 is Step 1 in UI
+      nav_label: `Moved to Step ${step + 2}`,
     });
 
     if (step < 3) {
@@ -194,9 +192,8 @@ useEffect(() => {
       return;
     }
 
-    ReactGA.event({
+    ReactGA.event("Generate Argument", {
       category: "Lead Magnet",
-      action: "Generate Argument",
       nav_label: form.feature 
     });
 
@@ -218,11 +215,10 @@ useEffect(() => {
 
   const regenerate = async () => {
 
-    ReactGA.event({
-      category: "Lead Magnet",
-      action: "Regenerate Argument",
-      nav_label: "User Regenerated"
-    });
+ ReactGA.event("Regenerate Argument", {
+  category: "Lead Magnet",
+  nav_label: "User Regenerated"
+});
     await requestDrafts();
     setCopied(false);
   };
@@ -232,11 +228,12 @@ useEffect(() => {
     if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
-      ReactGA.event({
+      ReactGA.event("Copy Text", {
         category: "Lead Magnet",
-        action: "Copy Text",
-        nav_label: form.feature // Tracks which feature they liked enough to copy
+        nav_label: form.feature // Now correctly passed as a parameter
       });
+
+
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch (error) {
@@ -554,9 +551,8 @@ Like a good sales pitch, the more personalized the better.              </p> */}
         className="powered-by"
         onClick={() => {
           // TRACKING: The user is heading back to your main site
-          ReactGA.event({
+          ReactGA.event("Click Powered By", {
             category: "Lead Magnet",
-            action: "Click Powered By",
             nav_label: "Arkweaver Main Site"
           });
         }}
